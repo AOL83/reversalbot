@@ -1,38 +1,53 @@
-# ReversalBot Stage 1 Scaffold
+# ReversalBot (Stage 1)
 
-This branch provides the Stage 1 scaffold for ReversalBot. It includes risk
-controls, anomaly detection, and mock execution. It does **not** place real
-trades or contain live strategy logic.
+ReversalBot Stage 1 delivers a risk-first scaffold for a systematic trading system.
+This stage focuses on configuration validation, safety controls, and mocked execution.
+No real broker integrations or strategies are included.
+
+## Goals
+- Strict configuration validation with YAML + environment overrides.
+- Safety controls: kill switch, pause/resume, flatten, and drawdown guard.
+- Mocked execution path with idempotency guarantees.
+- Monitoring hooks for anomaly detection and health checks.
+
+## Non-Goals (Stage 1)
+- No live exchange or broker connectors.
+- No strategy or alpha logic.
+- No full backtesting engine (only specs for Stage 2+).
 
 ## Quickstart
-
-### 1) Install dependencies
-
 ```bash
-pipx install poetry
 poetry install
+poetry run reversalbot --config configs/config.example.yaml status
 ```
 
-### 2) Configure
-
+## CLI
 ```bash
-cp configs/config.example.yaml configs/config.yaml
+poetry run reversalbot --config <path> run
+poetry run reversalbot --config <path> status
+poetry run reversalbot --config <path> pause
+poetry run reversalbot --config <path> resume
+poetry run reversalbot --config <path> flatten
+poetry run reversalbot --config <path> kill
+poetry run reversalbot --config <path> reset-kill
 ```
 
-Update `configs/config.yaml` as needed. Environment overrides are supported via
-`REVERSALBOT__SECTION__KEY`.
+## Configuration
+See `configs/README.md` and `configs/config.example.yaml` for schema and examples.
+Environment overrides are supported via:
 
-### 3) Run the CLI
-
-```bash
-poetry run python -m reversalbot.cli --config configs/config.yaml
+```
+REVERSALBOT__SECTION__FIELD=value
 ```
 
-## Quality gates
-
+## Development
 ```bash
+poetry install
 poetry run ruff check .
 poetry run ruff format --check .
 poetry run mypy .
 poetry run pytest -q
 ```
+
+## License
+MIT

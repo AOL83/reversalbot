@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import Any, cast
 
-import yaml  # type: ignore[import-untyped]
+import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -13,40 +13,38 @@ class AppConfig(BaseModel):
 
     name: str = "reversalbot"
     environment: str = "dev"
-    dry_run: bool = True
-    data_dir: Path = Path("./data")
+    run_id: str = "local-run"
 
 
 class LoggingConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     level: str = "INFO"
-    json: bool = False
 
 
 class RiskConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    max_drawdown_pct: float = Field(default=10.0, gt=0)
+    risk_per_trade: float = Field(default=0.01, gt=0, lt=1)
     max_notional_per_symbol: float = Field(default=25000.0, gt=0)
     max_total_notional: float = Field(default=100000.0, gt=0)
-    max_trades_per_day: int = Field(default=20, gt=0)
-    kill_switch_enabled: bool = True
+    max_drawdown_pct: float = Field(default=10.0, gt=0)
 
 
 class BrokerConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    name: str = "mock-broker"
-    api_base_url: str = "https://broker.example.com"
-    account_id: str = "demo-account"
+    base_currency: str = "USD"
+    default_slippage_bps: float = Field(default=2.0, ge=0)
+    default_spread_bps: float = Field(default=1.5, ge=0)
 
 
 class AnomalyConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    max_price_change_pct: float = Field(default=5.0, gt=0)
-    max_volume_spike: float = Field(default=3.0, gt=0)
+    max_spread_bps: float = Field(default=5.0, gt=0)
+    max_slippage_bps: float = Field(default=6.0, gt=0)
+    max_error_rate: float = Field(default=0.02, ge=0)
 
 
 class ReversalBotConfig(BaseModel):

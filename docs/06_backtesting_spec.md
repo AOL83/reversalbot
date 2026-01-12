@@ -1,11 +1,6 @@
-# Backtesting Specification
+# Backtesting Spec (Stage 2+)
 
-Stage 1 does not include a backtesting engine. The scaffold must, however,
-prepare for it by maintaining deterministic order flow and clean separation
-between strategy and execution.
-
-## Requirements
-
-- All decision inputs are logged.
-- Order routing is deterministic.
-- Risk checks are deterministic and unit-tested.
+Stage 2 will introduce a backtesting engine with:
+- Historical data ingestion
+- Deterministic order simulation
+- Risk rule enforcement identical to live routing

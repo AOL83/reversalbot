@@ -1,7 +1,6 @@
 # Glossary
 
-- **Drawdown**: Peak-to-trough decline in equity.
-- **Idempotency**: An operation that can be repeated without changing the result.
-- **Notional**: Dollar value of a position.
-- **Signal**: Strategy intent to trade.
-- **Stage 1**: Scaffold phase focused on safety and mock execution.
+- **Kill switch**: A hard lock that blocks new orders until reset.
+- **Pause**: Temporary stop for new orders without a full lock.
+- **Flatten**: Close all open positions immediately.
+- **Idempotency**: Repeated requests return the same result without double execution.

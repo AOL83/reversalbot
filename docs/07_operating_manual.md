@@ -1,15 +1,10 @@
 # Operating Manual
 
-Stage 1 is intended for local development and CI verification.
-
 ## Startup
+1. Validate config with `poetry run reversalbot --config <path> status`.
+2. Use `run` once health checks are green.
 
-1. Create a virtual environment with Poetry.
-2. Copy `configs/config.example.yaml` to `configs/config.yaml` and customize if
-   needed.
-3. Run the CLI in dry-run mode.
-
-## Observability
-
-- Monitor log output for risk and anomaly alerts.
-- Review test outputs in CI for regressions.
+## Emergency actions
+- `pause` to stop new orders.
+- `flatten` to close all positions.
+- `kill` to lock trading until a manual reset.

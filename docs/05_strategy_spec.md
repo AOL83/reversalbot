@@ -1,10 +1,7 @@
-# Strategy Specification
+# Strategy Spec (Stage 2+)
 
-Stage 1 does not implement real trading logic. The strategy layer is mocked to
-exercise risk controls and the execution pipeline.
-
-## Responsibilities
-
-- Emit deterministic signals for testing.
-- Provide traceable inputs for risk evaluation.
-- Avoid any live market connectivity.
+Stage 2 will define strategy interfaces only. Stage 1 does not implement alpha logic.
+Required future interfaces:
+- Signal generation contracts.
+- Position intent objects.
+- Execution handoff boundaries.

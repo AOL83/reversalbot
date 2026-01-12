@@ -1,25 +1,19 @@
 app:
-  name: "reversalbot"
-  environment: "dev"
-  dry_run: true
-  data_dir: "./data"
-
+  name: reversalbot
+  environment: dev
+  run_id: local-run
 logging:
-  level: "INFO"
-  json: false
-
+  level: INFO
 risk:
-  max_drawdown_pct: 12.5
+  risk_per_trade: 0.01
   max_notional_per_symbol: 25000.0
   max_total_notional: 100000.0
-  max_trades_per_day: 20
-  kill_switch_enabled: true
-
+  max_drawdown_pct: 10.0
 broker:
-  name: "mock-broker"
-  api_base_url: "https://broker.example.com"
-  account_id: "demo-account"
-
+  base_currency: USD
+  default_slippage_bps: 2.0
+  default_spread_bps: 1.5
 anomaly:
-  max_price_change_pct: 5.0
-  max_volume_spike: 3.0
+  max_spread_bps: 5.0
+  max_slippage_bps: 6.0
+  max_error_rate: 0.02
