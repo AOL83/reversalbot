@@ -1,0 +1,16 @@
+app:
+  environment: "dev"
+  run_id: "local"
+logging:
+  level: "INFO"
+  json: false
+risk:
+  max_drawdown_pct: 10.0
+  max_position_pct: 2.0
+  max_notional: 10000.0
+broker:
+  name: "mock"
+  base_currency: "USD"
+anomaly:
+  max_heartbeat_lag_s: 60
+  max_price_gap_pct: 5.0
