@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+import logging
 import os
 from pathlib import Path
 from typing import Any, cast
 
-import yaml  # type: ignore[import-untyped]
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class AppConfig(BaseModel):
@@ -22,6 +22,15 @@ class LoggingConfig(BaseModel):
 
     level: str = "INFO"
     json: bool = False
+
+    @field_validator("level")
+    @classmethod
+    def normalize_level(cls, value: str) -> str:
+        normalized = value.strip().upper()
+        if normalized not in logging.getLevelNamesMapping():
+            msg = f"Unknown logging level: {value}"
+            raise ValueError(msg)
+        return normalized
 
 
 class RiskConfig(BaseModel):
@@ -64,11 +73,52 @@ def _load_yaml(path: Path) -> dict[str, Any]:
         msg = f"Config file not found: {path}"
         raise FileNotFoundError(msg)
     with path.open("r", encoding="utf-8") as handle:
-        data = yaml.safe_load(handle) or {}
-    if not isinstance(data, dict):
-        msg = "Config root must be a mapping"
-        raise ValueError(msg)
+        data = _parse_simple_yaml(handle.read())
     return data
+
+
+def _parse_simple_yaml(text: str) -> dict[str, Any]:
+    root: dict[str, Any] = {}
+    stack: list[tuple[int, dict[str, Any]]] = [(0, root)]
+
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        while indent < stack[-1][0]:
+            stack.pop()
+        current = stack[-1][1]
+        key, separator, remainder = stripped.partition(":")
+        if separator == "":
+            msg = f"Invalid config line: {line}"
+            raise ValueError(msg)
+        key = key.strip()
+        value = remainder.strip()
+        if value == "":
+            child: dict[str, Any] = {}
+            current[key] = child
+            stack.append((indent + 2, child))
+        else:
+            current[key] = _parse_scalar(value)
+
+    return root
+
+
+def _parse_scalar(value: str) -> Any:
+    lower = value.lower()
+    if lower in {"true", "false"}:
+        return lower == "true"
+    if value.startswith(("'", '"')) and value.endswith(("'", '"')) and len(value) >= 2:
+        return value[1:-1]
+    try:
+        return int(value)
+    except ValueError:
+        pass
+    try:
+        return float(value)
+    except ValueError:
+        return value
 
 
 def _apply_env_overrides(data: dict[str, Any]) -> dict[str, Any]:

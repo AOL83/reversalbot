@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from reversalbot.config import load_config
+from reversalbot.config import LoggingConfig, ReversalBotConfig, load_config
 
 
 def test_load_config_defaults(tmp_path: Path) -> None:
@@ -26,3 +26,14 @@ def test_env_override(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     config = load_config(config_path)
 
     assert config.risk.max_drawdown_pct == 8.5
+
+
+def test_logging_level_normalized() -> None:
+    config = ReversalBotConfig.model_validate({"logging": {"level": "info"}})
+
+    assert config.logging.level == "INFO"
+
+
+def test_logging_level_invalid() -> None:
+    with pytest.raises(ValueError):
+        LoggingConfig.model_validate({"level": "not-a-level"})
