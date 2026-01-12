@@ -1,0 +1,23 @@
+app:
+  name: "ReversalBot"
+  environment: "local"
+  run_id: ""
+
+logging:
+  level: "INFO"
+
+risk:
+  risk_per_trade: 0.005
+  max_notional_per_symbol: 10000.0
+  max_total_notional: 25000.0
+  max_drawdown_pct: 0.15
+
+broker:
+  base_currency: "USD"
+  default_slippage_bps: 5
+  default_spread_bps: 2
+
+anomaly:
+  max_spread_bps: 20
+  max_slippage_bps: 25
+  max_error_rate: 0.05
