@@ -1,24 +1,17 @@
 # Configuration
 
-Stage 1 uses a single YAML file to configure the ReversalBot scaffold. The example
-configuration is stored in `configs/config.example.yaml`.
-
-## Sections
-
-- `app`: Application metadata and runtime settings.
-- `logging`: Log verbosity and format.
-- `risk`: Guardrails that protect capital and operational safety.
-- `broker`: Mock broker connectivity details.
-- `anomaly`: Detection thresholds for price/volume anomalies.
+ReversalBot uses a YAML config file with strict schema validation.
+Unknown keys are rejected.
 
 ## Environment overrides
+Use the format:
 
-Each config value can be overridden with environment variables using the
-`REVERSALBOT__` prefix. Nested keys are separated with double underscores.
+```
+REVERSALBOT__SECTION__FIELD=value
+```
 
 Example:
-
-```bash
-export REVERSALBOT__RISK__MAX_DRAWDOWN_PCT=10
-export REVERSALBOT__BROKER__ACCOUNT_ID="paper-account"
+```
+REVERSALBOT__LOGGING__LEVEL=DEBUG
+REVERSALBOT__RISK__MAX_DRAWDOWN_PCT=8.5
 ```

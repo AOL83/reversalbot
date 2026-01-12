@@ -1,33 +1,44 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from enum import Enum
 
 
-@dataclass
+class KillSwitchState(str, Enum):
+    ACTIVE = "active"
+    PAUSED = "paused"
+    KILLED = "killed"
+
+
 class KillSwitch:
-    enabled: bool = True
-    max_failures: int = 3
-    failure_count: int = 0
-    tripped: bool = False
-    reason: str | None = None
+    def __init__(self) -> None:
+        self._state: KillSwitchState = KillSwitchState.ACTIVE
 
-    def record_failure(self, reason: str) -> None:
-        if not self.enabled:
-            return
-        self.failure_count += 1
-        if self.failure_count >= self.max_failures:
-            self.tripped = True
-            self.reason = reason
+    @property
+    def state(self) -> KillSwitchState:
+        return self._state
 
-    def record_success(self) -> None:
-        if not self.enabled:
-            return
-        self.failure_count = 0
+    @property
+    def is_active(self) -> bool:
+        return self._state == KillSwitchState.ACTIVE
+
+    @property
+    def is_paused(self) -> bool:
+        return self._state == KillSwitchState.PAUSED
+
+    @property
+    def is_killed(self) -> bool:
+        return self._state == KillSwitchState.KILLED
+
+    def pause(self) -> None:
+        if self._state != KillSwitchState.KILLED:
+            self._state = KillSwitchState.PAUSED
+
+    def resume(self) -> None:
+        if self._state != KillSwitchState.KILLED:
+            self._state = KillSwitchState.ACTIVE
+
+    def kill(self) -> None:
+        self._state = KillSwitchState.KILLED
 
     def reset(self) -> None:
-        self.failure_count = 0
-        self.tripped = False
-        self.reason = None
-
-    def is_tripped(self) -> bool:
-        return self.enabled and self.tripped
+        self._state = KillSwitchState.ACTIVE

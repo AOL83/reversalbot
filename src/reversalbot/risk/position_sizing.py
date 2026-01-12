@@ -1,22 +1,19 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 
-
-@dataclass(frozen=True)
-class PositionSizer:
-    risk_per_trade_pct: float
-    max_notional: float
-
-    def size_position(self, equity: float, entry_price: float, stop_price: float) -> float:
-        if equity <= 0 or entry_price <= 0:
-            return 0.0
-        stop_distance = abs(entry_price - stop_price)
-        if stop_distance <= 0:
-            return 0.0
-        risk_amount = equity * (self.risk_per_trade_pct / 100)
-        quantity = risk_amount / stop_distance
-        notional = quantity * entry_price
-        if notional > self.max_notional:
-            quantity = self.max_notional / entry_price
-        return max(quantity, 0.0)
+def calculate_position_size(
+    account_equity: float,
+    risk_per_trade: float,
+    stop_distance: float,
+) -> float:
+    if account_equity <= 0:
+        msg = "Account equity must be positive"
+        raise ValueError(msg)
+    if risk_per_trade <= 0 or risk_per_trade >= 1:
+        msg = "Risk per trade must be between 0 and 1"
+        raise ValueError(msg)
+    if stop_distance <= 0:
+        msg = "Stop distance must be positive"
+        raise ValueError(msg)
+    risk_amount = account_equity * risk_per_trade
+    return risk_amount / stop_distance

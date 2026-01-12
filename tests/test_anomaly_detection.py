@@ -1,17 +1,9 @@
 from __future__ import annotations
 
-from reversalbot.monitoring.anomaly import detect_anomalies
+from reversalbot.monitoring.anomaly_detection import AnomalyDetector
 
 
-def test_detect_anomalies_flags_price_spike() -> None:
-    result = detect_anomalies(
-        previous_price=100.0,
-        current_price=120.0,
-        previous_volume=1000.0,
-        current_volume=1500.0,
-        max_price_change_pct=10.0,
-        max_volume_spike=3.0,
-    )
-
-    assert result.triggered
-    assert "price_change" in result.reasons
+def test_anomaly_detection_flags_limits() -> None:
+    detector = AnomalyDetector(max_spread_bps=5.0, max_slippage_bps=6.0, max_error_rate=0.02)
+    issues = detector.evaluate(spread_bps=10.0, slippage_bps=1.0, error_rate=0.01)
+    assert "spread_bps" in issues

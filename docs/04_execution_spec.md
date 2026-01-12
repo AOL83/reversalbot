@@ -1,15 +1,8 @@
-# Execution Specification
+# Execution Spec (Stage 1)
 
-Stage 1 execution is mock-only. Orders are not transmitted to any live venue.
+Execution is mocked and deterministic.
 
-## Order flow
-
-1. Receive intent from the strategy module.
-2. Validate against risk controls.
-3. Apply idempotency checks to avoid duplicate execution.
-4. Record the decision in logs/state.
-
-## Idempotency
-
-Orders must include an idempotency key. The router will reject duplicates and
-return the prior decision.
+- Orders are routed through an idempotent router.
+- Kill switch and pause/resume states are enforced.
+- Stop intent validation runs before broker submission.
+- Mock broker maintains in-memory positions.
